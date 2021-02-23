@@ -75,11 +75,13 @@ private:
     };
     System::SystemStatus mSystemStatus;
     SystemSettings mSystemSettings;
+    //!@brief Used for reading data.
     Input mInputWrapper;
     Mapper mMapper; //The global mapper
     PoseVector mGtPoses; //The gt poses to compare the trajectories
     std::unique_ptr<CameraMatrix> mCameraMatrix; // The camera matrix
     std::unique_ptr<Tracker> mTracker;
+    // data recorder, used for record current frame pose and connectivity.
     std::vector<IOWrap::Output3DWrapper*> mOutputWrapper;
     bool mLostInLastFrame; ///< true if tracking was lost. We only are lost if we have two tracking losses in a row!
     size_t mNTrackingLoss{0};

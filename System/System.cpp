@@ -218,12 +218,15 @@ System::System(const std::string &settingsFileName, const std::string& datasetFi
 bool
 System::startSystem()
 {
-    //We have to process a linear and a mult-thread pipeline
-    //For now, we assume that at least the sensor and the ui work in a thread
+    // We have to process a linear and a mult-thread pipeline
+    // For now, we assume that at least the sensor and the ui work in a thread
+    // Start to read data.
     mInputWrapper.startInput();
+    // reading groudtruth to do the comparision.
     if (mSystemSettings.InputReadGT)
         mOutputWrapper[0]->addGtTrajectory(mGtPoses);
-    //TODO: Replace by a condition
+    //  TODO: Replace by a condition
+    //!@brief Processing image as soon as reading images. 
     while (mInputWrapper.inputIsActive()) 
     {
         I3D_LOG(i3d::info) << "input is still active!";
@@ -233,10 +236,13 @@ System::startSystem()
         {
           std::this_thread::sleep_for(std::chrono::milliseconds(5));
           continue;
-        } 
+        }
+        // The frame header stores pose, timestamp and so on. 
         auto newFrameHeader = std::make_unique<FrameHeader>(newestFrameSet->mTimestamp,0);
-        //Transfer ownership
+        // Transfer ownership
+        // The frame data is more like a frame extractor, used for extract image features.
         auto newFrameData = std::make_unique<FrameData>(newFrameHeader.get(),std::move(newestFrameSet),mSystemSettings);
+        // Processing Frame.
         processFrame(std::move(newFrameData),std::move(newFrameHeader));
     }
     printSLAMReport();

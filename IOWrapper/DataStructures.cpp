@@ -184,12 +184,15 @@ FrameData::computeOptimizationStructure(const CameraMatrix& camMat)
  * Prepares the frame for tracking.
  * If we estimate the relative pose from keyframe to this frame, we have to compute the DT
  * If we estimate the relative pose from this frame to the keyframe, we only have to compute the valid edges
- */
+ * 对于第二种情况，怎么计算匹配呢？
+ * */
 void FrameData::prepareForTracking(const SystemSettings& settings, const CameraMatrix& camMat)
 {
     if (settings.TrackerTrackFromFrameToKf)
+        // 这里只是计算Edges来做
         computeValidEdgePixels();
     else
+        // 这里是用来计算DT的
         computeOptimizationStructure(camMat);
 }
 
